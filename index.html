@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>BMI Calculator — Measure Your Body Mass Index</title>
+  <meta name="description" content="A free, accurate BMI calculator. Enter your height and weight to get your Body Mass Index and standard health category." />
+  <meta name="theme-color" content="#0a0e17" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="./styles/main.css" />
+  <link rel="stylesheet" href="./styles/form.css" />
+  <link rel="stylesheet" href="./styles/result.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MUTE BUTTON (always visible)
+     ═══════════════════════════════════════════════════════════ -->
+<button
+  id="btn-mute"
+  class="mute-btn"
+  aria-label="Mute sounds"
+  aria-pressed="false"
+  title="Mute"
+>
+  <span class="icon-sound" aria-hidden="true">🔊</span>
+  <span class="icon-muted" aria-hidden="true">🔇</span>
+</button>
+
+<!-- ═══════════════════════════════════════════════════════════
+     EASTER EGG OVERLAY
+     ═══════════════════════════════════════════════════════════ -->
+<div id="easter-egg-overlay" class="easter-egg-overlay" role="alert" aria-live="assertive">
+  <div class="easter-egg-flash"></div>
+  <div class="easter-egg-title"></div>
+  <div class="easter-egg-subtitle"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CONFETTI CANVAS
+     ═══════════════════════════════════════════════════════════ -->
+<canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+<!-- ═══════════════════════════════════════════════════════════
+     APP
+     ═══════════════════════════════════════════════════════════ -->
+<div class="app">
+
+  <!-- ──────────────────────────────────────
+       SCREEN 1: LANDING / INPUT FORM
+       ────────────────────────────────────── -->
+  <section id="screen-landing" aria-label="BMI Calculator">
+    <div class="container">
+
+      <!-- Header -->
+      <header class="landing-header">
+        <div class="landing-logo" aria-hidden="true">
+          <div class="logo-icon">⚕</div>
+          <span class="logo-text">HealthMetrics</span>
+        </div>
+        <h1 class="landing-title">BMI Calculator</h1>
+        <p class="landing-subtitle">
+          Enter your measurements to calculate your Body Mass Index —
+          a general screening tool used worldwide.
+        </p>
+      </header>
+
+      <!-- Form Card -->
+      <div class="card form-card">
+        <form id="bmi-form" novalidate aria-label="BMI input form">
+          <div class="form-stack">
+
+            <!-- Age -->
+            <div class="form-group">
+              <label class="form-label" for="input-age">Age</label>
+              <input
+                type="number"
+                id="input-age"
+                class="form-input"
+                placeholder="e.g. 25"
+                min="18"
+                max="120"
+                inputmode="numeric"
+                autocomplete="off"
+                aria-required="true"
+                aria-describedby="error-age"
+              />
+              <span id="error-age" class="field-error" role="alert"></span>
+            </div>
+
+            <!-- Sex -->
+            <div class="form-group">
+              <span class="form-label" id="sex-label">Sex</span>
+              <div class="toggle-group" role="group" aria-labelledby="sex-label">
+                <button type="button" class="toggle-btn" data-sex="male"   aria-pressed="false">Male</button>
+                <button type="button" class="toggle-btn active" data-sex="prefer" aria-pressed="true">Prefer not to say</button>
+                <button type="button" class="toggle-btn" data-sex="female" aria-pressed="false">Female</button>
+              </div>
+            </div>
+
+            <!-- Unit System -->
+            <div class="form-group">
+              <span class="form-label" id="unit-label">Unit System</span>
+              <div class="toggle-group" role="group" aria-labelledby="unit-label">
+                <button type="button" class="toggle-btn active" data-unit="metric"   aria-pressed="true">Metric</button>
+                <button type="button" class="toggle-btn"        data-unit="imperial" aria-pressed="false">Imperial</button>
+              </div>
+            </div>
+
+            <!-- Height — Metric -->
+            <div id="height-metric-row" class="form-group">
+              <label class="form-label" for="input-height-cm">Height</label>
+              <div class="input-with-unit">
+                <input
+                  type="number"
+                  id="input-height-cm"
+                  class="form-input"
+                  placeholder="e.g. 175"
+                  min="50"
+                  max="272"
+                  inputmode="decimal"
+                  autocomplete="off"
+                  aria-required="true"
+                  aria-describedby="error-height-cm"
+                />
+                <span class="input-unit-label" aria-hidden="true">cm</span>
+              </div>
+              <span id="error-height-cm" class="field-error" role="alert"></span>
+            </div>
+
+            <!-- Height — Imperial -->
+            <div id="height-imperial-row" class="form-group" hidden>
+              <span class="form-label" id="height-imperial-label">Height</span>
+              <div class="height-inputs" role="group" aria-labelledby="height-imperial-label">
+                <div class="input-with-unit">
+                  <input
+                    type="number"
+                    id="input-height-ft"
+                    class="form-input"
+                    placeholder="5"
+                    min="1"
+                    max="8"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    aria-label="Feet"
+                    aria-describedby="error-height-ft"
+                  />
+                  <span class="input-unit-label" aria-hidden="true">ft</span>
+                </div>
+                <div class="input-with-unit">
+                  <input
+                    type="number"
+                    id="input-height-in"
+                    class="form-input"
+                    placeholder="9"
+                    min="0"
+                    max="11"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    aria-label="Inches"
+                  />
+                  <span class="input-unit-label" aria-hidden="true">in</span>
+                </div>
+              </div>
+              <span id="error-height-ft" class="field-error" role="alert"></span>
+            </div>
+
+            <!-- Weight — Metric -->
+            <div id="weight-metric-row" class="form-group">
+              <label class="form-label" for="input-weight-kg">Weight</label>
+              <div class="input-with-unit">
+                <input
+                  type="number"
+                  id="input-weight-kg"
+                  class="form-input"
+                  placeholder="e.g. 70"
+                  min="10"
+                  max="500"
+                  inputmode="decimal"
+                  autocomplete="off"
+                  aria-required="true"
+                  aria-describedby="error-weight-kg"
+                />
+                <span class="input-unit-label" aria-hidden="true">kg</span>
+              </div>
+              <span id="error-weight-kg" class="field-error" role="alert"></span>
+            </div>
+
+            <!-- Weight — Imperial -->
+            <div id="weight-imperial-row" class="form-group" hidden>
+              <label class="form-label" for="input-weight-lb">Weight</label>
+              <div class="input-with-unit">
+                <input
+                  type="number"
+                  id="input-weight-lb"
+                  class="form-input"
+                  placeholder="e.g. 154"
+                  min="22"
+                  max="1100"
+                  inputmode="decimal"
+                  autocomplete="off"
+                  aria-required="true"
+                  aria-describedby="error-weight-lb"
+                />
+                <span class="input-unit-label" aria-hidden="true">lbs</span>
+              </div>
+              <span id="error-weight-lb" class="field-error" role="alert"></span>
+            </div>
+
+            <!-- Submit -->
+            <div class="submit-area">
+              <button type="submit" id="btn-calculate" class="btn btn-primary">
+                Calculate BMI
+              </button>
+              <p class="form-disclaimer">
+                BMI is a general screening tool, not a medical diagnosis.
+                This calculator is intended for adults (18+) only.
+              </p>
+            </div>
+
+          </div><!-- /.form-stack -->
+        </form>
+      </div><!-- /.form-card -->
+
+    </div><!-- /.container -->
+  </section>
+
+  <!-- ──────────────────────────────────────
+       SCREEN 2: RESULT
+       ────────────────────────────────────── -->
+  <section id="screen-result" aria-label="Your BMI Result" aria-live="polite">
+    <div class="container">
+
+      <!-- Analyzing card -->
+      <div id="analyzing-card" class="card analyzing-card">
+        <p class="analyzing-title">Analyzing your data</p>
+        <div class="analyzing-dots" aria-hidden="true">
+          <span class="analyzing-dot"></span>
+          <span class="analyzing-dot"></span>
+          <span class="analyzing-dot"></span>
+        </div>
+        <div class="progress-bar-track" role="progressbar" aria-label="Calculating…">
+          <div id="progress-bar-fill" class="progress-bar-fill"></div>
+        </div>
+      </div>
+
+      <!-- Result container (hidden until analyzing done) -->
+      <div id="result-container" class="result-container">
+
+        <!-- BMI Value -->
+        <div class="card bmi-value-card">
+          <p class="bmi-label">Your BMI</p>
+          <div id="bmi-number" class="bmi-number" aria-live="polite">0.0</div>
+          <span
+            id="category-badge"
+            class="category-badge"
+            role="status"
+          >
+            <span class="badge-dot" aria-hidden="true"></span>
+            <span id="category-text">—</span>
+          </span>
+        </div>
+
+        <!-- Roast Card -->
+        <div id="roast-card" class="card roast-card" role="status">
+          <div class="roast-card-inner">
+            <p class="roast-header">Verdict</p>
+            <p id="roast-text" class="roast-text"></p>
+          </div>
+        </div>
+
+        <!-- AI Roast Card (shown only if AI is configured and responds) -->
+        <div id="ai-roast-card" class="card ai-roast-card">
+          <div class="roast-card-inner">
+            <p class="ai-badge">
+              <span aria-hidden="true">✦</span> AI Says
+            </p>
+            <p id="ai-roast-text" class="ai-roast-text"></p>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div id="result-actions" class="result-actions">
+          <button id="btn-recalculate" class="btn btn-primary">
+            Calculate Again
+          </button>
+        </div>
+
+      </div><!-- /#result-container -->
+
+    </div><!-- /.container -->
+  </section>
+
+</div><!-- /.app -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     Optional: Set your Gemini API key here for AI roasts
+     Leave as null to use local roast library only
+     ═══════════════════════════════════════════════════════════ -->
+<script>
+  window.GEMINI_API_KEY = null; // e.g. 'AIza...'
+</script>
+
+<script type="module" src="./src/main.js"></script>
+
+</body>
+</html>
