@@ -15,6 +15,7 @@ import { getRoast }                             from './roasts.js';
 import { playSound, toggleMute, isMuted, CATEGORY_SOUNDS } from './audio.js';
 import { countUp, animateProgressBar, revealAfter, playEasterEggOverlay, shakeScreen } from './animations.js';
 import { getAIRoast }                           from './ai.js';
+import { ScrollPicker }                         from './picker.js';
 
 // ─── State ──────────────────────────────────────────────────────────────────
 let currentUnit = 'metric';   // 'metric' | 'imperial'
@@ -26,12 +27,19 @@ const screenLanding = document.getElementById('screen-landing');
 const screenResult  = document.getElementById('screen-result');
 
 const formEl        = document.getElementById('bmi-form');
-const ageInput      = document.getElementById('input-age');
-const heightCmInput = document.getElementById('input-height-cm');
-const heightFtInput = document.getElementById('input-height-ft');
-const heightInInput = document.getElementById('input-height-in');
-const weightKgInput = document.getElementById('input-weight-kg');
-const weightLbInput = document.getElementById('input-weight-lb');
+const agePickerEl      = document.getElementById('picker-age');
+const heightCmPickerEl = document.getElementById('picker-height-cm');
+const heightFtPickerEl = document.getElementById('picker-height-ft');
+const heightInPickerEl = document.getElementById('picker-height-in');
+const weightKgPickerEl = document.getElementById('picker-weight-kg');
+const weightLbPickerEl = document.getElementById('picker-weight-lb');
+
+const agePicker      = new ScrollPicker(agePickerEl, 18, 120, 25);
+const heightCmPicker = new ScrollPicker(heightCmPickerEl, 50, 272, 175);
+const heightFtPicker = new ScrollPicker(heightFtPickerEl, 1, 8, 5);
+const heightInPicker = new ScrollPicker(heightInPickerEl, 0, 11, 9);
+const weightKgPicker = new ScrollPicker(weightKgPickerEl, 10, 500, 70);
+const weightLbPicker = new ScrollPicker(weightLbPickerEl, 22, 1100, 154);
 const calcBtn       = document.getElementById('btn-calculate');
 
 // Unit toggle buttons
@@ -128,49 +136,43 @@ formEl.addEventListener('submit', async (e) => {
   clearErrors();
 
   // Validate age
-  const ageVal = ageInput.value.trim();
-  const ageError = validateAge(ageVal);
+  const age = agePicker.getValue();
+  const ageError = validateAge(age);
   if (ageError) {
     showError('age', ageError);
-    ageInput.classList.add('invalid');
     return;
   }
-  const age = parseInt(ageVal, 10);
 
   // Validate inputs based on unit
   let parsed;
   if (currentUnit === 'metric') {
     parsed = parseMetricInputs({
-      height: heightCmInput.value.trim(),
-      weight: weightKgInput.value.trim(),
+      height: heightCmPicker.getValue(),
+      weight: weightKgPicker.getValue(),
     });
 
     if (!parsed.valid) {
       if (parsed.errors.height) {
         showError('height-cm', parsed.errors.height);
-        heightCmInput.classList.add('invalid');
       }
       if (parsed.errors.weight) {
         showError('weight-kg', parsed.errors.weight);
-        weightKgInput.classList.add('invalid');
       }
       return;
     }
   } else {
     parsed = parseImperialInputs({
-      feet:   heightFtInput.value.trim(),
-      inches: heightInInput.value.trim(),
-      pounds: weightLbInput.value.trim(),
+      feet:   heightFtPicker.getValue(),
+      inches: heightInPicker.getValue(),
+      pounds: weightLbPicker.getValue(),
     });
 
     if (!parsed.valid) {
       if (parsed.errors.height) {
         showError('height-ft', parsed.errors.height);
-        heightFtInput.classList.add('invalid');
       }
       if (parsed.errors.weight) {
         showError('weight-lb', parsed.errors.weight);
-        weightLbInput.classList.add('invalid');
       }
       return;
     }
@@ -262,18 +264,7 @@ formEl.addEventListener('submit', async (e) => {
   }
 });
 
-// ─── Input live validation clearing ──────────────────────────────────────────
-[ageInput, heightCmInput, heightFtInput, heightInInput, weightKgInput, weightLbInput].forEach((input) => {
-  if (!input) return;
-  input.addEventListener('input', () => {
-    input.classList.remove('invalid');
-    const errorEl = document.getElementById(`error-${input.id.replace('input-', '')}`);
-    if (errorEl) {
-      errorEl.classList.remove('visible');
-      errorEl.textContent = '';
-    }
-  });
-});
+// ─── Live validation clear is no longer needed since pickers guarantee numbers ───
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function showError(fieldId, message) {
@@ -287,9 +278,6 @@ function clearErrors() {
   document.querySelectorAll('.field-error').forEach((el) => {
     el.classList.remove('visible');
     el.textContent = '';
-  });
-  document.querySelectorAll('.form-input').forEach((el) => {
-    el.classList.remove('invalid');
   });
 }
 

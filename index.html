@@ -76,18 +76,7 @@
             <!-- Age -->
             <div class="form-group">
               <label class="form-label" for="input-age">Age</label>
-              <input
-                type="number"
-                id="input-age"
-                class="form-input"
-                placeholder="e.g. 25"
-                min="18"
-                max="120"
-                inputmode="numeric"
-                autocomplete="off"
-                aria-required="true"
-                aria-describedby="error-age"
-              />
+              <div id="picker-age" class="scroll-picker-container" aria-label="Age"></div>
               <span id="error-age" class="field-error" role="alert"></span>
             </div>
 
@@ -114,18 +103,7 @@
             <div id="height-metric-row" class="form-group">
               <label class="form-label" for="input-height-cm">Height</label>
               <div class="input-with-unit">
-                <input
-                  type="number"
-                  id="input-height-cm"
-                  class="form-input"
-                  placeholder="e.g. 175"
-                  min="50"
-                  max="272"
-                  inputmode="decimal"
-                  autocomplete="off"
-                  aria-required="true"
-                  aria-describedby="error-height-cm"
-                />
+                <div id="picker-height-cm" class="scroll-picker-container" aria-label="Height in cm"></div>
                 <span class="input-unit-label" aria-hidden="true">cm</span>
               </div>
               <span id="error-height-cm" class="field-error" role="alert"></span>
@@ -136,32 +114,11 @@
               <span class="form-label" id="height-imperial-label">Height</span>
               <div class="height-inputs" role="group" aria-labelledby="height-imperial-label">
                 <div class="input-with-unit">
-                  <input
-                    type="number"
-                    id="input-height-ft"
-                    class="form-input"
-                    placeholder="5"
-                    min="1"
-                    max="8"
-                    inputmode="numeric"
-                    autocomplete="off"
-                    aria-label="Feet"
-                    aria-describedby="error-height-ft"
-                  />
+                  <div id="picker-height-ft" class="scroll-picker-container" aria-label="Feet"></div>
                   <span class="input-unit-label" aria-hidden="true">ft</span>
                 </div>
                 <div class="input-with-unit">
-                  <input
-                    type="number"
-                    id="input-height-in"
-                    class="form-input"
-                    placeholder="9"
-                    min="0"
-                    max="11"
-                    inputmode="numeric"
-                    autocomplete="off"
-                    aria-label="Inches"
-                  />
+                  <div id="picker-height-in" class="scroll-picker-container" aria-label="Inches"></div>
                   <span class="input-unit-label" aria-hidden="true">in</span>
                 </div>
               </div>
@@ -172,18 +129,7 @@
             <div id="weight-metric-row" class="form-group">
               <label class="form-label" for="input-weight-kg">Weight</label>
               <div class="input-with-unit">
-                <input
-                  type="number"
-                  id="input-weight-kg"
-                  class="form-input"
-                  placeholder="e.g. 70"
-                  min="10"
-                  max="500"
-                  inputmode="decimal"
-                  autocomplete="off"
-                  aria-required="true"
-                  aria-describedby="error-weight-kg"
-                />
+                <div id="picker-weight-kg" class="scroll-picker-container" aria-label="Weight in kg"></div>
                 <span class="input-unit-label" aria-hidden="true">kg</span>
               </div>
               <span id="error-weight-kg" class="field-error" role="alert"></span>
@@ -193,18 +139,7 @@
             <div id="weight-imperial-row" class="form-group" hidden>
               <label class="form-label" for="input-weight-lb">Weight</label>
               <div class="input-with-unit">
-                <input
-                  type="number"
-                  id="input-weight-lb"
-                  class="form-input"
-                  placeholder="e.g. 154"
-                  min="22"
-                  max="1100"
-                  inputmode="decimal"
-                  autocomplete="off"
-                  aria-required="true"
-                  aria-describedby="error-weight-lb"
-                />
+                <div id="picker-weight-lb" class="scroll-picker-container" aria-label="Weight in lbs"></div>
                 <span class="input-unit-label" aria-hidden="true">lbs</span>
               </div>
               <span id="error-weight-lb" class="field-error" role="alert"></span>
